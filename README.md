@@ -5,7 +5,7 @@ A minimalist 15-second typing test website built with vanilla HTML, CSS, and Jav
 ![swift_type logo](swifttypefavicon.png)
 
 ## Version
-v1.0.0
+v1.0.0 (Works best on a desktop)
 
 ## Features
 
