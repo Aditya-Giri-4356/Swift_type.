@@ -2,7 +2,7 @@
 
 A minimalist 15-second typing test website built with vanilla HTML, CSS, and JavaScript.
 
-![swift_type logo](swifttypefavicon.png)
+![swift_type logo](swifttype..png)
 
 ## Version
 v1.0.0 (Works best on a desktop)
