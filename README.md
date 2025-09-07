@@ -4,6 +4,8 @@ An AI-powered 15-second typing test website that adapts to your skill level and 
 
 ![swift_type logo](swifttypefavicon.png)
 
+> **🚀 [Try it now!](https://aditya-giri-4356.github.io/Swift_type./versions/) - Choose between AI-powered v2.0.0 or Classic v1.0.0**
+
 ## Version
 v2.0.0
 
@@ -139,18 +141,24 @@ The AI system fetches content from these free APIs:
 - Challenging word combinations
 - Continuous skill refinement
 
-## Version Access
+## 🎯 **Start Here - Version Selector**
 
-### **Current Version (Default)**
-- **v2.0.0**: AI-powered version with intelligent features
+**Choose your preferred typing experience:**
+- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/
+
+The version selector lets you easily choose between:
+- **v2.0.0 (AI-Powered)**: Intelligent text generation, adaptive difficulty, personalized training
+- **v1.0.0 (Classic)**: Original minimalist design with static content
+
+## Direct Access Links
+
+### **AI-Powered Version (Recommended)**
+- **v2.0.0**: Latest version with intelligent features
 - **URL**: https://aditya-giri-4356.github.io/Swift_type./
 
-### **Previous Versions**
-- **v1.0.0**: Classic version with static content
+### **Classic Version**
+- **v1.0.0**: Original version with static content
 - **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/v1.0.0/
-
-### **Version Selector**
-- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/
 
 ## Installation
 
@@ -188,6 +196,10 @@ The AI system fetches content from these free APIs:
 - **APIs**: Quotable.io, ZenQuotes.io, Kanye.rest, Chuck Norris API
 - **Design**: Minimalist, user-focused interface
 - **AI Logic**: Custom-built adaptive learning system
+
+## Quick Start
+
+**🎯 [Visit the Version Selector](https://aditya-giri-4356.github.io/Swift_type./versions/) to choose your preferred experience!**
 
 ## License
 
