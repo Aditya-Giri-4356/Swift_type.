@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swift_type. - Version Selector</title>
+    <link rel="icon" type="image/png" href="../swifttypefavicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --bg-color: #000000;
+            --text-fade: #a6a6a6;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            font-family: 'League Spartan', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .version-selector {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .version-card {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-width: 280px;
+        }
+
+        .version-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        .version-card.featured {
+            border-color: #4CAF50;
+            background: #1a2a1a;
+        }
+
+        .version-number {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .version-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .version-description {
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            color: var(--text-fade);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .version-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+
+        .version-features li {
+            font-size: 12px;
+            color: var(--text-fade);
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .version-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+        }
+
+        .version-button {
+            background: var(--primary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .version-button:hover {
+            background: #e0e0e0;
+            transform: scale(1.05);
+        }
+
+        .version-button.featured {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .version-button.featured:hover {
+            background: #45a049;
+        }
+
+        .badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+            color: var(--text-fade);
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">swift_type.</div>
+        <div class="subtitle">Choose Your Version</div>
+    </div>
+
+    <div class="version-selector">
+        <div class="version-card featured">
+            <div class="version-number">v2.0.0 <span class="badge">LATEST</span></div>
+            <div class="version-title">AI-Powered Edition</div>
+            <div class="version-description">
+                The latest version with intelligent text generation, adaptive difficulty, and personalized training.
+            </div>
+            <ul class="version-features">
+                <li>Internet-based text generation</li>
+                <li>AI difficulty analysis</li>
+                <li>Personalized training</li>
+                <li>Weak key detection</li>
+                <li>Performance tracking</li>
+                <li>Smart fallback system</li>
+            </ul>
+            <a href="../index.html" class="version-button featured">Try AI Version</a>
+        </div>
+
+        <div class="version-card">
+            <div class="version-number">v1.0.0</div>
+            <div class="version-title">Classic Edition</div>
+            <div class="version-description">
+                The original minimalist typing test with static content and basic features.
+            </div>
+            <ul class="version-features">
+                <li>15-second typing test</li>
+                <li>Real-time statistics</li>
+                <li>Keyboard visualization</li>
+                <li>Three keyboard styles</li>
+                <li>Smooth animations</li>
+                <li>Error handling</li>
+            </ul>
+            <a href="v1.0.0/index.html" class="version-button">Try Classic Version</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Visit the <a href="https://github.com/Aditya-Giri-4356/Swift_type.">GitHub Repository</a> for more information</p>
+        <p>Live website: <a href="https://aditya-giri-4356.github.io/Swift_type./">aditya-giri-4356.github.io/Swift_type.</a></p>
+    </div>
+</body>
+</html>

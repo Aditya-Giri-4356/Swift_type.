@@ -139,6 +139,19 @@ The AI system fetches content from these free APIs:
 - Challenging word combinations
 - Continuous skill refinement
 
+## Version Access
+
+### **Current Version (Default)**
+- **v2.0.0**: AI-powered version with intelligent features
+- **URL**: https://aditya-giri-4356.github.io/Swift_type./
+
+### **Previous Versions**
+- **v1.0.0**: Classic version with static content
+- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/v1.0.0/
+
+### **Version Selector**
+- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/
+
 ## Installation
 
 1. Clone the repository
@@ -146,9 +159,19 @@ The AI system fetches content from these free APIs:
 3. Ensure all files are in the following structure:
    ```
    your-website/
-   ├── index.html
+   ├── index.html (v2.0.0 - AI-powered)
    ├── swifttypefavicon.png
-   └── README.md
+   ├── README.md
+   └── versions/
+       ├── index.html (version selector)
+       ├── v1.0.0/
+       │   ├── index.html
+       │   ├── README.md
+       │   └── swifttypefavicon.png
+       └── v2.0.0/
+           ├── index.html
+           ├── README.md
+           └── swifttypefavicon.png
    ```
 
 ## Browser Support
