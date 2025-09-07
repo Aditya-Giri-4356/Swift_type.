@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>swift_type.</title>
+    <link rel="icon" type="image/png" href="swifttypefavicon.png">
+    <!-- Import fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ffffff;
+            --bg-color: #000000;
+            --text-fade: #a6a6a6;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            font-family: 'League Spartan', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: -1px;
+        }
+
+        .subtitle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .subtitle {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .version {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px;
+            color: var(--text-fade);
+            opacity: 0.8;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .timer {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-family: 'Roboto', sans-serif;
+            top: 20px;
+        }
+
+        .typing-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 120px; /* Height for 3 lines */
+            position: relative;
+            font-size: 32px;
+            line-height: 1.3;
+            max-width: 900px;
+            margin: 0 auto;
+            overflow: hidden; /* Hide any overflow */
+        }
+
+        .typing-line {
+            display: block;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+            transform: translateY(0);
+            margin-bottom: 8px;
+            position: relative;
+            padding: 2px 0;
+        }
+
+        .typing-line.completed {
+            color: var(--text-fade);
+            opacity: 0.5;
+            transform: translateY(-20px);
+            transition-duration: 0.8s;
+        }
+
+        .typing-line.removing {
+            opacity: 0;
+            transform: translateY(-40px);
+            height: 0;
+            margin: 0;
+            transition-duration: 1s;
+        }
+
+        .typing-line:not(.completed):not(.removing) {
+            /* Remove the animation property */
+        }
+
+        .keyboard {
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 60px;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .key {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto', sans-serif;
+            color: var(--bg-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+
+        .key.round {
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border-color: transparent;
+        }
+
+        .key.square {
+            border-radius: 4px;
+            background-color: var(--primary-color);
+            border-color: transparent;
+        }
+
+        .key.bordered {
+            border-radius: 4px;
+            background-color: transparent;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .key.active {
+            transform: scale(0.92);
+            background-color: #808080;
+        }
+
+        .stats {
+            position: absolute;
+            bottom: 100px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .restart {
+            position: absolute;
+            bottom: 40px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 14px;
+            animation: textBlink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1.2em;
+            background-color: #ffffff;
+            margin-right: 2px;
+            vertical-align: middle;
+            animation: blink 1s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+
+        .typing-text span {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .results-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 120px;
+            position: relative;
+            margin-top: -50px;
+        }
+
+        .result-container {
+            text-align: center;
+        }
+
+        .result-number {
+            font-size: 96px;
+            font-weight: bold;
+            font-family: 'League Spartan', sans-serif;
+            margin-bottom: 5px;
+        }
+
+        .result-label {
+            font-size: 24px;
+            font-family: 'League Spartan', sans-serif;
+            color: var(--primary-color);
+            text-transform: lowercase;
+        }
+
+        .divider {
+            width: 2px;
+            height: 160px;
+            background-color: var(--primary-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes textBlink {
+            0%, 100% { color: var(--primary-color); }
+            50% { color: var(--text-fade); }
+        }
+
+        .logo-image {
+            display: none;
+        }
+
+        .key-toggle {
+            position: absolute;
+            top: 20px;
+            right: 120px;
+        }
+
+        .toggle-group {
+            display: flex;
+            background: #1a1a1a;
+            padding: 4px;
+            border-radius: 30px;
+            gap: 4px;
+        }
+
+        .toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-fade);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .toggle-btn.active {
+            background: #2d2d2d;
+            color: var(--primary-color);
+        }
+
+        .toggle-btn:hover:not(.active) {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <div class="logo">swift_type.</div>
+            <div class="subtitle-container">
+                <div class="subtitle">AI-powered 15 sec typing website</div>
+                <div class="version">v2.0.0</div>
+            </div>
+        </div>
+        <div class="logo">st:]</div>
+    </div>
+
+    <div class="key-toggle">
+        <div class="toggle-group">
+            <button class="toggle-btn active" data-shape="round">round</button>
+            <button class="toggle-btn" data-shape="square">square</button>
+            <button class="toggle-btn" data-shape="bordered">bordered</button>
+        </div>
+    </div>
+
+    <div class="timer" id="timer">15</div>
+
+    <div class="main-content">
+        <div class="typing-text" id="typing-text">
+            The text to be typed goes here and it should be fading away #ffffff in this colour.#a6a6a6
+        </div>
+
+        <div class="keyboard">
+            <div class="keyboard-row">
+                <div class="key" data-key="q">q</div>
+                <div class="key" data-key="w">w</div>
+                <div class="key" data-key="e">e</div>
+                <div class="key" data-key="r">r</div>
+                <div class="key" data-key="t">t</div>
+                <div class="key" data-key="y">y</div>
+                <div class="key" data-key="u">u</div>
+                <div class="key" data-key="i">i</div>
+                <div class="key" data-key="o">o</div>
+                <div class="key" data-key="p">p</div>
+            </div>
+            <div class="keyboard-row">
+                <div class="key" data-key="a">a</div>
+                <div class="key" data-key="s">s</div>
+                <div class="key" data-key="d">d</div>
+                <div class="key" data-key="f">f</div>
+                <div class="key" data-key="g">g</div>
+                <div class="key" data-key="h">h</div>
+                <div class="key" data-key="j">j</div>
+                <div class="key" data-key="k">k</div>
+                <div class="key" data-key="l">l</div>
+            </div>
+            <div class="keyboard-row">
+                <div class="key" data-key="z">z</div>
+                <div class="key" data-key="x">x</div>
+                <div class="key" data-key="c">c</div>
+                <div class="key" data-key="v">v</div>
+                <div class="key" data-key="b">b</div>
+                <div class="key" data-key="n">n</div>
+                <div class="key" data-key="m">m</div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div id="wpm">0 wpm</div>
+            <div id="accuracy">0% acc</div>
+        </div>
+
+        <div class="restart">press tab to restart</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // AI-Powered Text Generation and Difficulty Analysis System
+            
+            // User performance tracking
+            let userPerformance = {
+                averageWPM: 0,
+                averageAccuracy: 0,
+                difficultyLevel: 1, // 1-5 scale
+                errorPatterns: {},
+                weakKeys: new Set(),
+                testHistory: []
+            };
+
+            // Difficulty-based word categories
+            const wordCategories = {
+                easy: [
+                    "the", "and", "for", "are", "but", "not", "you", "all", "can", "had", "her", "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "its", "may", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "man", "men", "put", "say", "she", "too", "use"
+                ],
+                medium: [
+                    "about", "after", "again", "being", "could", "every", "first", "great", "house", "large", "might", "never", "other", "place", "right", "small", "still", "their", "there", "these", "think", "three", "under", "water", "where", "which", "while", "world", "would", "write", "years", "young", "above", "below", "between", "during", "family", "friend", "happen", "important", "interest", "learn", "little", "money", "mother", "number", "people", "person", "problem", "school", "should", "something", "system", "through", "together", "without"
+                ],
+                hard: [
+                    "beautiful", "business", "computer", "different", "education", "experience", "government", "information", "interesting", "knowledge", "necessary", "opportunity", "organization", "particular", "population", "relationship", "responsibility", "significant", "technology", "understanding", "university", "development", "environment", "international", "management", "professional", "psychological", "revolutionary", "sophisticated", "transportation", "characteristic", "constitutional", "extraordinary", "institutional", "philosophical", "representative", "revolutionary", "technological", "unconstitutional", "unprecedented"
+                ]
+            };
+
+            // AI-powered text generation from internet sources
+            async function fetchRandomText() {
+                try {
+                    // Using multiple free APIs for text generation
+                    const apis = [
+                        'https://api.quotable.io/random',
+                        'https://zenquotes.io/api/random',
+                        'https://api.kanye.rest/',
+                        'https://api.chucknorris.io/jokes/random'
+                    ];
+                    
+                    const randomApi = apis[Math.floor(Math.random() * apis.length)];
+                    const response = await fetch(randomApi);
+                    const data = await response.json();
+                    
+                    let text = '';
+                    if (data.content) text = data.content;
+                    else if (data.quote) text = data.quote;
+                    else if (data.value) text = data.value;
+                    else if (data.joke) text = data.joke;
+                    
+                    return processTextForTyping(text);
+                } catch (error) {
+                    console.log('API fetch failed, using fallback text');
+                    return generateFallbackText();
+                }
+            }
+
+            function processTextForTyping(text) {
+                return text
+                    .toLowerCase()
+                    .replace(/[^\w\s]/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .substring(0, 200);
+            }
+
+            function generateFallbackText() {
+                const difficulty = userPerformance.difficultyLevel;
+                let words = [];
+                
+                if (difficulty <= 2) {
+                    words = [...wordCategories.easy, ...wordCategories.medium.slice(0, 10)];
+                } else if (difficulty <= 4) {
+                    words = [...wordCategories.medium, ...wordCategories.hard.slice(0, 5)];
+                } else {
+                    words = [...wordCategories.hard, ...wordCategories.medium.slice(-10)];
+                }
+                
+                // Generate sentence with AI-like difficulty adjustment
+                const sentenceLength = Math.min(15, Math.max(8, difficulty * 2 + Math.floor(Math.random() * 5)));
+                const selectedWords = [];
+                
+                for (let i = 0; i < sentenceLength; i++) {
+                    if (Math.random() < 0.3 && userPerformance.weakKeys.size > 0) {
+                        // Include words with user's weak keys
+                        const weakKey = Array.from(userPerformance.weakKeys)[Math.floor(Math.random() * userPerformance.weakKeys.size)];
+                        const weakWords = words.filter(word => word.includes(weakKey));
+                        if (weakWords.length > 0) {
+                            selectedWords.push(weakWords[Math.floor(Math.random() * weakWords.length)]);
+                        } else {
+                            selectedWords.push(words[Math.floor(Math.random() * words.length)]);
+                        }
+                    } else {
+                        selectedWords.push(words[Math.floor(Math.random() * words.length)]);
+                    }
+                }
+                
+                return selectedWords.join(' ');
+            }
+
+            // AI-based difficulty analysis
+            function analyzeWordDifficulty(word) {
+                let difficulty = 1;
+                
+                // Length factor
+                if (word.length > 8) difficulty += 1;
+                if (word.length > 12) difficulty += 1;
+                
+                // Character complexity
+                const complexChars = /[qwertyuiopasdfghjklzxcvbnm]/g;
+                const matches = word.match(complexChars);
+                if (matches && matches.length > word.length * 0.7) difficulty += 1;
+                
+                // Repeated characters
+                if (/(.)\1{2,}/.test(word)) difficulty += 1;
+                
+                // Uncommon letter combinations
+                const uncommonCombos = ['qu', 'th', 'ch', 'sh', 'ph', 'gh', 'ck', 'ng', 'nk'];
+                const hasUncommon = uncommonCombos.some(combo => word.includes(combo));
+                if (hasUncommon) difficulty += 0.5;
+                
+                return Math.min(5, difficulty);
+            }
+
+            // Performance tracking and difficulty adjustment
+            function updateUserPerformance(wpm, accuracy, errors) {
+                userPerformance.testHistory.push({ wpm, accuracy, errors, timestamp: Date.now() });
+                
+                // Keep only last 10 tests
+                if (userPerformance.testHistory.length > 10) {
+                    userPerformance.testHistory.shift();
+                }
+                
+                // Calculate averages
+                const recentTests = userPerformance.testHistory.slice(-5);
+                userPerformance.averageWPM = recentTests.reduce((sum, test) => sum + test.wpm, 0) / recentTests.length;
+                userPerformance.averageAccuracy = recentTests.reduce((sum, test) => sum + test.accuracy, 0) / recentTests.length;
+                
+                // Adjust difficulty based on performance
+                if (userPerformance.averageWPM > 60 && userPerformance.averageAccuracy > 95) {
+                    userPerformance.difficultyLevel = Math.min(5, userPerformance.difficultyLevel + 0.2);
+                } else if (userPerformance.averageWPM < 30 || userPerformance.averageAccuracy < 80) {
+                    userPerformance.difficultyLevel = Math.max(1, userPerformance.difficultyLevel - 0.3);
+                }
+                
+                // Track error patterns
+                if (errors) {
+                    errors.forEach(error => {
+                        userPerformance.errorPatterns[error] = (userPerformance.errorPatterns[error] || 0) + 1;
+                        if (userPerformance.errorPatterns[error] > 3) {
+                            userPerformance.weakKeys.add(error);
+                        }
+                    });
+                }
+            }
+
+            let currentSentence = '';
+            let currentInput = '';
+            let startTime = null;
+            let isTestActive = false;
+            let timer = null;
+            let timeLeft = 15;
+            let errorChars = [];
+            
+            const typingText = document.getElementById('typing-text');
+            const wpmDisplay = document.getElementById('wpm');
+            const accuracyDisplay = document.getElementById('accuracy');
+            const timerDisplay = document.getElementById('timer');
+
+            async function getNewSentence() {
+                try {
+                    const text = await fetchRandomText();
+                    return text || generateFallbackText();
+                } catch (error) {
+                    return generateFallbackText();
+                }
+            }
+
+            function updateTimer() {
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endTest();
+                    return;
+                }
+                timeLeft--;
+            }
+
+            async function initTest() {
+                // Remove previous results if they exist
+                const previousResults = document.querySelector('.results-container');
+                if (previousResults) {
+                    previousResults.remove();
+                }
+                
+                // Show typing text, keyboard, and stats
+                typingText.classList.remove('hidden');
+                document.querySelector('.keyboard').classList.remove('hidden');
+                document.querySelector('.stats').classList.remove('hidden');
+                
+                // Load new AI-generated text
+                currentSentence = await getNewSentence();
+                currentInput = '';
+                startTime = null;
+                isTestActive = true;
+                timeLeft = 15;
+                errorChars = [];
+                updateText();
+                wpmDisplay.textContent = '0 wpm';
+                accuracyDisplay.textContent = '0% acc';
+                
+                if (timer) {
+                    clearInterval(timer);
+                }
+            }
+
+            function calculateWPM(timeElapsed) {
+                const words = currentInput.length / 5;
+                const timeInMinutes = timeElapsed / 60000;
+                return Math.round(words / timeInMinutes);
+            }
+
+            function calculateAccuracy() {
+                let correct = 0;
+                const inputLength = currentInput.length;
+                errorChars = [];
+                
+                for (let i = 0; i < inputLength; i++) {
+                    if (currentInput[i] === currentSentence[i]) {
+                        correct++;
+                    } else {
+                        errorChars.push(currentSentence[i]);
+                    }
+                }
+                
+                return Math.round((correct / inputLength) * 100) || 0;
+            }
+
+            function endTest() {
+                isTestActive = false;
+                clearInterval(timer);
+                
+                // Get the numbers without the units
+                const finalWPM = parseInt(wpmDisplay.textContent.split(' ')[0]);
+                const finalAccuracy = parseInt(accuracyDisplay.textContent.split('%')[0]);
+                
+                // Update user performance with AI analysis
+                updateUserPerformance(finalWPM, finalAccuracy, errorChars);
+                
+                // Hide the typing text, keyboard, and bottom stats
+                typingText.classList.add('hidden');
+                document.querySelector('.keyboard').classList.add('hidden');
+                document.querySelector('.stats').classList.add('hidden');
+                
+                // Create and show results with labels
+                const resultsHTML = `
+                    <div class="results-container">
+                        <div class="result-container">
+                            <div class="result-number">${finalWPM}</div>
+                            <div class="result-label">wpm</div>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="result-container">
+                            <div class="result-number">${finalAccuracy}%</div>
+                            <div class="result-label">acc</div>
+                        </div>
+                    </div>
+                `;
+                
+                typingText.insertAdjacentHTML('afterend', resultsHTML);
+            }
+
+            function updateText() {
+                const maxCharsPerLine = 45;
+                const maxVisibleLines = 3;  // Maximum number of visible lines
+                
+                const lines = [];
+                let currentLine = '';
+                const wordsArray = currentSentence.split(' ');
+                
+                for (let word of wordsArray) {
+                    if ((currentLine + word).length > maxCharsPerLine) {
+                        lines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine += word + ' ';
+                    }
+                }
+                if (currentLine) {
+                    lines.push(currentLine.trim());
+                }
+
+                let displayText = '';
+                let currentPosition = 0;
+                
+                // Calculate which lines should be visible
+                const currentLineIndex = lines.findIndex((line, index) => {
+                    const lineStart = lines.slice(0, index).join(' ').length;
+                    const lineEnd = lineStart + line.length;
+                    return currentInput.length >= lineStart && currentInput.length <= lineEnd;
+                });
+
+                // Get the range of lines to display (current line and one before/after if available)
+                const startIndex = Math.max(0, currentLineIndex - 1);
+                const endIndex = Math.min(lines.length, startIndex + maxVisibleLines);
+                
+                const visibleLines = lines.slice(startIndex, endIndex);
+                
+                visibleLines.forEach((line, index) => {
+                    let lineContent = '';
+                    const absoluteLineIndex = startIndex + index;
+                    const lineStart = lines.slice(0, absoluteLineIndex).join(' ').length;
+                    const lineEnd = lineStart + line.length;
+                    
+                    const isLineCompleted = currentInput.length > lineEnd;
+                    const isLineCurrent = currentInput.length >= lineStart && currentInput.length <= lineEnd;
+                    
+                    let lineClass = 'typing-line';
+                    if (isLineCompleted) {
+                        lineClass += ' completed';
+                        if (currentInput.length > lineEnd + line.length) {
+                            lineClass += ' removing';
+                        }
+                    }
+                    
+                    lineContent += `<span class="${lineClass}">`;
+                    
+                    for (let i = 0; i < line.length; i++) {
+                        const charIndex = lineStart + i;
+                        
+                        if (charIndex === currentInput.length && isLineCurrent) {
+                            lineContent += `<span class="cursor"></span>`;
+                        }
+                        
+                        if (charIndex < currentInput.length) {
+                            if (currentInput[charIndex] === line[i]) {
+                                lineContent += `<span style="color: #ffffff">${line[i]}</span>`;
+                            } else {
+                                lineContent += `<span style="color: #ff4444">${line[i]}</span>`;
+                            }
+                        } else {
+                            lineContent += `<span style="color: #a6a6a6">${line[i]}</span>`;
+                        }
+                    }
+                    
+                    lineContent += '</span>';
+                    displayText += lineContent;
+                });
+                
+                typingText.innerHTML = displayText;
+                
+                if (currentInput.length > currentSentence.length - 60) {
+                    getNewSentence().then(newText => {
+                        currentSentence += ' ' + newText;
+                    });
+                }
+            }
+
+            // Add this function to clean up completed lines periodically
+            function cleanupCompletedLines() {
+                const completedLines = document.querySelectorAll('.typing-line.removing');
+                completedLines.forEach(line => {
+                    line.addEventListener('transitionend', () => {
+                        line.remove();
+                    });
+                });
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    initTest();
+                    return;
+                }
+
+                if (!isTestActive) return;
+
+                const key = e.key.toLowerCase();
+                const keyElement = document.querySelector(`[data-key="${key}"]`);
+                
+                if (keyElement) {
+                    keyElement.classList.add('active');
+                }
+
+                if (!startTime && /^[a-z]$/.test(key)) {
+                    startTime = Date.now();
+                    timer = setInterval(updateTimer, 1000);
+                }
+
+                if (e.key === 'Backspace') {
+                    e.preventDefault();
+                    if (currentInput.length > 0) {
+                        currentInput = currentInput.slice(0, -1);
+                        updateText();
+                        cleanupCompletedLines();
+
+                        if (startTime) {
+                            const timeElapsed = Date.now() - startTime;
+                            const wpm = calculateWPM(timeElapsed);
+                            const accuracy = calculateAccuracy();
+                            
+                            wpmDisplay.textContent = `${wpm} wpm`;
+                            accuracyDisplay.textContent = `${accuracy}% acc`;
+                        }
+                    }
+                    return;
+                }
+
+                if (/^[a-z ]$/.test(key)) {
+                    currentInput += key;
+                    updateText();
+                    cleanupCompletedLines();
+
+                    if (startTime) {
+                        const timeElapsed = Date.now() - startTime;
+                        const wpm = calculateWPM(timeElapsed);
+                        const accuracy = calculateAccuracy();
+                        
+                        wpmDisplay.textContent = `${wpm} wpm`;
+                        accuracyDisplay.textContent = `${accuracy}% acc`;
+                    }
+                }
+            });
+
+            document.addEventListener('keyup', (e) => {
+                const key = e.key.toLowerCase();
+                const keyElement = document.querySelector(`[data-key="${key}"]`);
+                
+                if (keyElement) {
+                    keyElement.classList.remove('active');
+                }
+            });
+
+            // Initialize the first test
+            initTest();
+
+            const toggleBtns = document.querySelectorAll('.toggle-btn');
+            const keys = document.querySelectorAll('.key');
+            
+            // Set initial key shape
+            keys.forEach(key => key.classList.add('round'));
+
+            toggleBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    toggleBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    btn.classList.add('active');
+                    
+                    // Remove all shape classes from keys
+                    keys.forEach(key => {
+                        key.classList.remove('round', 'square', 'bordered');
+                        key.classList.add(btn.dataset.shape);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
