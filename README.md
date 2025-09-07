@@ -67,4 +67,9 @@ Toggle between three keyboard styles using the buttons in the top-right corner:
 
 1. Clone the repository
 2. Place files in your web server directory
-3. Ensure all files are in the following structure: 
+3. Ensure all files are in the following structure:
+
+
+## Link to the website 
+
+https://aditya-giri-4356.github.io/Swift_type./
