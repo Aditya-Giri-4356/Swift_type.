@@ -404,7 +404,8 @@
                     ];
                     
                     const randomApi = apis[Math.floor(Math.random() * apis.length)];
-                    const response = await fetch(randomApi);
+                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                    const response = await fetch(proxyUrl + encodeURIComponent(randomApi));
                     const data = await response.json();
                     
                     let text = '';
