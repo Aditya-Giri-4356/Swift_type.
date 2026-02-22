@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>swift_type.</title>
     <link rel="icon" type="image/png" href="swifttypefavicon.png">
     <!-- Import fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=League+Spartan:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=League+Spartan:wght@400;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary-color: #ffffff;
@@ -78,22 +81,30 @@
             top: 20px;
         }
 
+        .typing-text-wrapper {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
         .typing-text {
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 120px; /* Height for 3 lines */
+            height: 120px;
+            /* Height for 3 lines */
             position: relative;
             font-size: 32px;
             line-height: 1.3;
             max-width: 900px;
             margin: 0 auto;
-            overflow: hidden; /* Hide any overflow */
+            overflow: hidden;
+            /* Hide any overflow */
         }
 
         .typing-line {
             display: block;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 1;
             transform: translateY(0);
             margin-bottom: 8px;
@@ -116,9 +127,6 @@
             transition-duration: 1s;
         }
 
-        .typing-line:not(.completed):not(.removing) {
-            /* Remove the animation property */
-        }
 
         .keyboard {
             display: grid;
@@ -189,24 +197,30 @@
         }
 
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
         }
 
         .cursor {
-            display: inline-block;
+            position: absolute;
             width: 3px;
-            height: 1.2em;
+            height: 1.15em;
             background-color: #ffffff;
-            margin-right: 2px;
-            vertical-align: middle;
             animation: blink 1s ease-in-out infinite;
-            position: relative;
-            z-index: 1;
+            z-index: 10;
+            pointer-events: none;
+            transition: left 0.08s ease-out, top 0.15s ease-out;
         }
 
         .typing-text span {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             z-index: 2;
         }
@@ -249,12 +263,46 @@
         }
 
         @keyframes textBlink {
-            0%, 100% { color: var(--primary-color); }
-            50% { color: var(--text-fade); }
+
+            0%,
+            100% {
+                color: var(--primary-color);
+            }
+
+            50% {
+                color: var(--text-fade);
+            }
         }
 
         .logo-image {
             display: none;
+        }
+
+        .loading-bar {
+            width: 60%;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+
+        .loading-bar-fill {
+            width: 40%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #ffffff, transparent);
+            border-radius: 4px;
+            animation: loadingShimmer 1.2s ease-in-out infinite;
+        }
+
+        @keyframes loadingShimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(350%);
+            }
         }
 
         .key-toggle {
@@ -295,13 +343,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
         <div>
             <div class="logo">swift_type.</div>
             <div class="subtitle-container">
                 <div class="subtitle">AI-powered 15 sec typing website</div>
-                <div class="version">v2.0.0</div>
+                <div class="version">v2.0.1</div>
             </div>
         </div>
         <div class="logo">st:]</div>
@@ -318,8 +367,13 @@
     <div class="timer" id="timer">15</div>
 
     <div class="main-content">
-        <div class="typing-text" id="typing-text">
-            The text to be typed goes here and it should be fading away #ffffff in this colour.#a6a6a6
+        <div class="typing-text-wrapper">
+            <div class="typing-text" id="typing-text">
+                <div class="loading-bar">
+                    <div class="loading-bar-fill"></div>
+                </div>
+            </div>
+            <div class="cursor" id="smooth-cursor"></div>
         </div>
 
         <div class="keyboard">
@@ -368,7 +422,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // AI-Powered Text Generation and Difficulty Analysis System
-            
+
             // User performance tracking
             let userPerformance = {
                 averageWPM: 0,
@@ -379,76 +433,117 @@
                 testHistory: []
             };
 
-            // Difficulty-based word categories
+            // Expanded word corpus — no external dependencies
             const wordCategories = {
                 easy: [
-                    "the", "and", "for", "are", "but", "not", "you", "all", "can", "had", "her", "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "its", "may", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "man", "men", "put", "say", "she", "too", "use"
+                    "the", "and", "for", "are", "but", "not", "you", "all", "can", "had",
+                    "her", "was", "one", "our", "out", "day", "get", "has", "him", "his",
+                    "how", "its", "may", "new", "now", "old", "see", "two", "way", "who",
+                    "boy", "did", "man", "men", "put", "say", "she", "too", "use", "run",
+                    "big", "end", "set", "try", "ask", "own", "why", "let", "few", "got",
+                    "top", "red", "air", "eye", "far", "sun", "cut", "hot", "low", "oil",
+                    "sit", "add", "map", "dog", "car", "eat", "lay", "ten", "ago", "bit",
+                    "job", "arm", "bed", "box", "cup", "hat", "ice", "key", "lip", "mix",
+                    "net", "pay", "pin", "row", "sky", "tip", "van", "win", "yes", "zip"
                 ],
                 medium: [
-                    "about", "after", "again", "being", "could", "every", "first", "great", "house", "large", "might", "never", "other", "place", "right", "small", "still", "their", "there", "these", "think", "three", "under", "water", "where", "which", "while", "world", "would", "write", "years", "young", "above", "below", "between", "during", "family", "friend", "happen", "important", "interest", "learn", "little", "money", "mother", "number", "people", "person", "problem", "school", "should", "something", "system", "through", "together", "without"
+                    "about", "after", "again", "being", "could", "every", "first", "great",
+                    "house", "large", "might", "never", "other", "place", "right", "small",
+                    "still", "their", "there", "these", "think", "three", "under", "water",
+                    "where", "which", "while", "world", "would", "write", "years", "young",
+                    "above", "below", "bring", "build", "carry", "clean", "close", "cover",
+                    "cross", "dance", "drive", "earth", "eight", "enjoy", "enter", "equal",
+                    "fight", "floor", "force", "front", "green", "group", "guard", "happy",
+                    "heart", "heavy", "horse", "human", "image", "inner", "judge", "knife",
+                    "laugh", "level", "light", "local", "magic", "match", "metal", "model",
+                    "month", "moral", "music", "north", "novel", "ocean", "offer", "order",
+                    "paint", "paper", "party", "peace", "phone", "plain", "plant", "plate",
+                    "point", "pound", "power", "press", "price", "prime", "print", "prize",
+                    "prove", "queen", "quick", "quiet", "quite", "radio", "raise", "range",
+                    "reach", "ready", "river", "rough", "round", "royal", "scale", "scene",
+                    "sense", "serve", "shape", "share", "sharp", "sheet", "shift", "shirt",
+                    "shoot", "sight", "since", "sixth", "sixty", "sleep", "slide", "smile",
+                    "smoke", "solar", "solve", "sorry", "sound", "south", "space", "spare",
+                    "speak", "speed", "spend", "spoke", "sport", "squad", "stage", "stake",
+                    "stand", "start", "state", "steam", "steel", "steep", "stick", "stock",
+                    "stone", "store", "storm", "story", "strip", "study", "stuff", "style",
+                    "sugar", "super", "sweet", "table", "taste", "teach", "theme", "thing",
+                    "thumb", "tight", "title", "today", "total", "touch", "tough", "tower",
+                    "track", "trade", "train", "treat", "trend", "trial", "trick", "truck",
+                    "truly", "trust", "twice", "union", "unity", "until", "upper", "upset",
+                    "urban", "usual", "valid", "value", "video", "visit", "vital", "vocal",
+                    "voice", "waste", "watch", "wheel", "white", "whole", "worth", "wound"
                 ],
                 hard: [
-                    "beautiful", "business", "computer", "different", "education", "experience", "government", "information", "interesting", "knowledge", "necessary", "opportunity", "organization", "particular", "population", "relationship", "responsibility", "significant", "technology", "understanding", "university", "development", "environment", "international", "management", "professional", "psychological", "revolutionary", "sophisticated", "transportation", "characteristic", "constitutional", "extraordinary", "institutional", "philosophical", "representative", "revolutionary", "technological", "unconstitutional", "unprecedented"
+                    "abstract", "academic", "accepted", "accident", "accurate", "achieved",
+                    "actually", "advanced", "affected", "afforded", "although", "analysis",
+                    "announce", "anything", "apparent", "approach", "argument", "assembly",
+                    "assuming", "attached", "attitude", "audience", "balanced", "bathroom",
+                    "becoming", "behavior", "believed", "birthday", "boundary", "breaking",
+                    "building", "business", "calendar", "campaign", "capacity", "casualty",
+                    "category", "cellphone", "chairman", "champion", "chemical", "children",
+                    "circular", "climbing", "coaching", "coherent", "collapse", "colonial",
+                    "combined", "comeback", "commerce", "compiled", "complete", "composed",
+                    "compound", "computer", "conflict", "confused", "congress", "conquest",
+                    "consider", "constant", "consumer", "contempt", "continue", "contract",
+                    "contrast", "convince", "creating", "creative", "criminal", "critical",
+                    "crossing", "cultural", "currency", "customer", "database", "daughter",
+                    "deadline", "december", "deciding", "decision", "declined", "decoding",
+                    "decrease", "defaults", "defeated", "defender", "defining", "definite",
+                    "delicate", "delivery", "demanded", "departed", "deployed", "describe",
+                    "designer", "detailed", "detected", "develop", "dialogue", "directed",
+                    "directly", "director", "disabled", "disaster", "discount", "discover",
+                    "discrete", "disorder", "dispatch", "disposal", "disposed", "distance",
+                    "distinct", "district", "doctrine", "document", "domestic", "dominant",
+                    "download", "dramatic", "dreadful", "dropping", "duration", "dwelling",
+                    "dynamics", "earnings", "economic", "educated", "election", "electric",
+                    "elephant", "elevated", "eligible", "embedded", "emerging", "emission",
+                    "emotions", "emphasis", "employed", "employer", "enabling", "enclosed",
+                    "encoding", "enormous", "ensuring", "entirely", "entrance", "envelope",
+                    "equality", "equipped", "escalate", "escaping", "essentia", "estimate",
+                    "evaluate", "eventual", "evidence", "exacting", "examined", "examiner",
+                    "exceeded", "exchange", "exciting", "excluded", "exercise", "exhibits",
+                    "expanded", "expected", "expedite", "expenses", "explicit", "explorer",
+                    "exponent", "exported", "exposure", "extended", "external", "enormous",
+                    "equipped", "football", "forecast", "feedback", "feminine", "firmware",
+                    "finished", "flexible", "floating", "fortress", "fourteen", "fraction",
+                    "fragment", "franklin", "freezing", "frequent", "friendly", "frontier",
+                    "function", "gambling", "gathered", "generate", "genocide", "geometry",
+                    "gradient", "graphics", "grasping", "grateful", "guardian", "guidance",
+                    "handbook", "handling", "hardware", "harmless", "headline", "helpless",
+                    "heritage", "historic", "homework", "honestly", "hopeless", "horrible",
+                    "hospital", "humidity", "hundreds", "identify", "ideology", "ignorant",
+                    "illusion", "imagined", "immature", "immortal", "imperial", "implicit",
+                    "imported", "imposing", "improved", "incident", "included", "increase",
+                    "indicate", "indirect", "industry", "infinite", "informal", "informed",
+                    "inherent", "initiate", "innocent", "inspired", "instance", "integral"
                 ]
             };
 
-            // AI-powered text generation from internet sources
-            async function fetchRandomText() {
-                try {
-                    // Using multiple free APIs for text generation
-                    const apis = [
-                        'https://api.quotable.io/random',
-                        'https://zenquotes.io/api/random',
-                        'https://api.kanye.rest/',
-                        'https://api.chucknorris.io/jokes/random'
-                    ];
-                    
-                    const randomApi = apis[Math.floor(Math.random() * apis.length)];
-                    const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                    const response = await fetch(proxyUrl + encodeURIComponent(randomApi));
-                    const data = await response.json();
-                    
-                    let text = '';
-                    if (data.content) text = data.content;
-                    else if (data.quote) text = data.quote;
-                    else if (data.value) text = data.value;
-                    else if (data.joke) text = data.joke;
-                    
-                    return processTextForTyping(text);
-                } catch (error) {
-                    console.log('API fetch failed, using fallback text');
-                    return generateFallbackText();
-                }
-            }
-
-            function processTextForTyping(text) {
-                return text
-                    .toLowerCase()
-                    .replace(/[^\w\s]/g, '')
-                    .replace(/\s+/g, ' ')
-                    .trim()
-                    .substring(0, 200);
-            }
-
-            function generateFallbackText() {
+            // Self-contained text generation
+            function generateText() {
                 const difficulty = userPerformance.difficultyLevel;
                 let words = [];
-                
+
                 if (difficulty <= 2) {
-                    words = [...wordCategories.easy, ...wordCategories.medium.slice(0, 10)];
+                    words = [...wordCategories.easy, ...wordCategories.medium.slice(0, 30)];
                 } else if (difficulty <= 4) {
-                    words = [...wordCategories.medium, ...wordCategories.hard.slice(0, 5)];
+                    words = [...wordCategories.medium, ...wordCategories.hard.slice(0, 20)];
                 } else {
-                    words = [...wordCategories.hard, ...wordCategories.medium.slice(-10)];
+                    words = [...wordCategories.hard, ...wordCategories.medium.slice(-30)];
                 }
-                
-                // Generate sentence with AI-like difficulty adjustment
-                const sentenceLength = Math.min(15, Math.max(8, difficulty * 2 + Math.floor(Math.random() * 5)));
+
+                // Shuffle to avoid repeating patterns
+                for (let i = words.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [words[i], words[j]] = [words[j], words[i]];
+                }
+
+                const sentenceLength = Math.min(20, Math.max(10, Math.round(difficulty * 2) + Math.floor(Math.random() * 6)));
                 const selectedWords = [];
-                
+
                 for (let i = 0; i < sentenceLength; i++) {
                     if (Math.random() < 0.3 && userPerformance.weakKeys.size > 0) {
-                        // Include words with user's weak keys
                         const weakKey = Array.from(userPerformance.weakKeys)[Math.floor(Math.random() * userPerformance.weakKeys.size)];
                         const weakWords = words.filter(word => word.includes(weakKey));
                         if (weakWords.length > 0) {
@@ -460,55 +555,55 @@
                         selectedWords.push(words[Math.floor(Math.random() * words.length)]);
                     }
                 }
-                
+
                 return selectedWords.join(' ');
             }
 
             // AI-based difficulty analysis
             function analyzeWordDifficulty(word) {
                 let difficulty = 1;
-                
+
                 // Length factor
                 if (word.length > 8) difficulty += 1;
                 if (word.length > 12) difficulty += 1;
-                
+
                 // Character complexity
                 const complexChars = /[qwertyuiopasdfghjklzxcvbnm]/g;
                 const matches = word.match(complexChars);
                 if (matches && matches.length > word.length * 0.7) difficulty += 1;
-                
+
                 // Repeated characters
                 if (/(.)\1{2,}/.test(word)) difficulty += 1;
-                
+
                 // Uncommon letter combinations
                 const uncommonCombos = ['qu', 'th', 'ch', 'sh', 'ph', 'gh', 'ck', 'ng', 'nk'];
                 const hasUncommon = uncommonCombos.some(combo => word.includes(combo));
                 if (hasUncommon) difficulty += 0.5;
-                
+
                 return Math.min(5, difficulty);
             }
 
             // Performance tracking and difficulty adjustment
             function updateUserPerformance(wpm, accuracy, errors) {
                 userPerformance.testHistory.push({ wpm, accuracy, errors, timestamp: Date.now() });
-                
+
                 // Keep only last 10 tests
                 if (userPerformance.testHistory.length > 10) {
                     userPerformance.testHistory.shift();
                 }
-                
+
                 // Calculate averages
                 const recentTests = userPerformance.testHistory.slice(-5);
                 userPerformance.averageWPM = recentTests.reduce((sum, test) => sum + test.wpm, 0) / recentTests.length;
                 userPerformance.averageAccuracy = recentTests.reduce((sum, test) => sum + test.accuracy, 0) / recentTests.length;
-                
+
                 // Adjust difficulty based on performance
                 if (userPerformance.averageWPM > 60 && userPerformance.averageAccuracy > 95) {
                     userPerformance.difficultyLevel = Math.min(5, userPerformance.difficultyLevel + 0.2);
                 } else if (userPerformance.averageWPM < 30 || userPerformance.averageAccuracy < 80) {
                     userPerformance.difficultyLevel = Math.max(1, userPerformance.difficultyLevel - 0.3);
                 }
-                
+
                 // Track error patterns
                 if (errors) {
                     errors.forEach(error => {
@@ -527,19 +622,14 @@
             let timer = null;
             let timeLeft = 15;
             let errorChars = [];
-            
+
             const typingText = document.getElementById('typing-text');
             const wpmDisplay = document.getElementById('wpm');
             const accuracyDisplay = document.getElementById('accuracy');
             const timerDisplay = document.getElementById('timer');
 
-            async function getNewSentence() {
-                try {
-                    const text = await fetchRandomText();
-                    return text || generateFallbackText();
-                } catch (error) {
-                    return generateFallbackText();
-                }
+            function getNewSentence() {
+                return generateText();
             }
 
             function updateTimer() {
@@ -551,20 +641,21 @@
                 timeLeft--;
             }
 
-            async function initTest() {
+            function initTest() {
                 // Remove previous results if they exist
                 const previousResults = document.querySelector('.results-container');
                 if (previousResults) {
                     previousResults.remove();
                 }
-                
-                // Show typing text, keyboard, and stats
+
+                // Show typing text, keyboard, stats, and cursor
                 typingText.classList.remove('hidden');
                 document.querySelector('.keyboard').classList.remove('hidden');
                 document.querySelector('.stats').classList.remove('hidden');
-                
-                // Load new AI-generated text
-                currentSentence = await getNewSentence();
+                document.getElementById('smooth-cursor').style.display = 'block';
+
+                // Generate text instantly — no network call
+                currentSentence = getNewSentence();
                 currentInput = '';
                 startTime = null;
                 isTestActive = true;
@@ -573,7 +664,7 @@
                 updateText();
                 wpmDisplay.textContent = '0 wpm';
                 accuracyDisplay.textContent = '0% acc';
-                
+
                 if (timer) {
                     clearInterval(timer);
                 }
@@ -589,7 +680,7 @@
                 let correct = 0;
                 const inputLength = currentInput.length;
                 errorChars = [];
-                
+
                 for (let i = 0; i < inputLength; i++) {
                     if (currentInput[i] === currentSentence[i]) {
                         correct++;
@@ -597,26 +688,27 @@
                         errorChars.push(currentSentence[i]);
                     }
                 }
-                
+
                 return Math.round((correct / inputLength) * 100) || 0;
             }
 
             function endTest() {
                 isTestActive = false;
                 clearInterval(timer);
-                
+
                 // Get the numbers without the units
                 const finalWPM = parseInt(wpmDisplay.textContent.split(' ')[0]);
                 const finalAccuracy = parseInt(accuracyDisplay.textContent.split('%')[0]);
-                
+
                 // Update user performance with AI analysis
                 updateUserPerformance(finalWPM, finalAccuracy, errorChars);
-                
-                // Hide the typing text, keyboard, and bottom stats
+
+                // Hide the typing text, keyboard, bottom stats, and cursor
                 typingText.classList.add('hidden');
                 document.querySelector('.keyboard').classList.add('hidden');
                 document.querySelector('.stats').classList.add('hidden');
-                
+                document.getElementById('smooth-cursor').style.display = 'none';
+
                 // Create and show results with labels
                 const resultsHTML = `
                     <div class="results-container">
@@ -631,18 +723,18 @@
                         </div>
                     </div>
                 `;
-                
+
                 typingText.insertAdjacentHTML('afterend', resultsHTML);
             }
 
             function updateText() {
                 const maxCharsPerLine = 45;
                 const maxVisibleLines = 3;  // Maximum number of visible lines
-                
+
                 const lines = [];
                 let currentLine = '';
                 const wordsArray = currentSentence.split(' ');
-                
+
                 for (let word of wordsArray) {
                     if ((currentLine + word).length > maxCharsPerLine) {
                         lines.push(currentLine.trim());
@@ -657,7 +749,7 @@
 
                 let displayText = '';
                 let currentPosition = 0;
-                
+
                 // Calculate which lines should be visible
                 const currentLineIndex = lines.findIndex((line, index) => {
                     const lineStart = lines.slice(0, index).join(' ').length;
@@ -668,18 +760,18 @@
                 // Get the range of lines to display (current line and one before/after if available)
                 const startIndex = Math.max(0, currentLineIndex - 1);
                 const endIndex = Math.min(lines.length, startIndex + maxVisibleLines);
-                
+
                 const visibleLines = lines.slice(startIndex, endIndex);
-                
+
                 visibleLines.forEach((line, index) => {
                     let lineContent = '';
                     const absoluteLineIndex = startIndex + index;
                     const lineStart = lines.slice(0, absoluteLineIndex).join(' ').length;
                     const lineEnd = lineStart + line.length;
-                    
+
                     const isLineCompleted = currentInput.length > lineEnd;
                     const isLineCurrent = currentInput.length >= lineStart && currentInput.length <= lineEnd;
-                    
+
                     let lineClass = 'typing-line';
                     if (isLineCompleted) {
                         lineClass += ' completed';
@@ -687,16 +779,14 @@
                             lineClass += ' removing';
                         }
                     }
-                    
+
                     lineContent += `<span class="${lineClass}">`;
-                    
+
                     for (let i = 0; i < line.length; i++) {
                         const charIndex = lineStart + i;
-                        
-                        if (charIndex === currentInput.length && isLineCurrent) {
-                            lineContent += `<span class="cursor"></span>`;
-                        }
-                        
+
+                        const isCursorHere = charIndex === currentInput.length && isLineCurrent;
+
                         if (charIndex < currentInput.length) {
                             if (currentInput[charIndex] === line[i]) {
                                 lineContent += `<span style="color: #ffffff">${line[i]}</span>`;
@@ -704,20 +794,30 @@
                                 lineContent += `<span style="color: #ff4444">${line[i]}</span>`;
                             }
                         } else {
-                            lineContent += `<span style="color: #a6a6a6">${line[i]}</span>`;
+                            lineContent += `<span${isCursorHere ? ' id="cursor-target"' : ''} style="color: #a6a6a6">${line[i]}</span>`;
                         }
                     }
-                    
+
                     lineContent += '</span>';
                     displayText += lineContent;
                 });
-                
+
                 typingText.innerHTML = displayText;
-                
+
+                // Smoothly reposition the cursor
+                const target = document.getElementById('cursor-target');
+                const smoothCursor = document.getElementById('smooth-cursor');
+                if (target && smoothCursor) {
+                    const wrapperRect = typingText.parentElement.getBoundingClientRect();
+                    const targetRect = target.getBoundingClientRect();
+                    smoothCursor.style.left = (targetRect.left - wrapperRect.left) + 'px';
+                    smoothCursor.style.top = (targetRect.top - wrapperRect.top) + 'px';
+                    smoothCursor.style.height = targetRect.height + 'px';
+                    smoothCursor.style.display = 'block';
+                }
+
                 if (currentInput.length > currentSentence.length - 60) {
-                    getNewSentence().then(newText => {
-                        currentSentence += ' ' + newText;
-                    });
+                    currentSentence += ' ' + getNewSentence();
                 }
             }
 
@@ -742,7 +842,7 @@
 
                 const key = e.key.toLowerCase();
                 const keyElement = document.querySelector(`[data-key="${key}"]`);
-                
+
                 if (keyElement) {
                     keyElement.classList.add('active');
                 }
@@ -763,7 +863,7 @@
                             const timeElapsed = Date.now() - startTime;
                             const wpm = calculateWPM(timeElapsed);
                             const accuracy = calculateAccuracy();
-                            
+
                             wpmDisplay.textContent = `${wpm} wpm`;
                             accuracyDisplay.textContent = `${accuracy}% acc`;
                         }
@@ -780,7 +880,7 @@
                         const timeElapsed = Date.now() - startTime;
                         const wpm = calculateWPM(timeElapsed);
                         const accuracy = calculateAccuracy();
-                        
+
                         wpmDisplay.textContent = `${wpm} wpm`;
                         accuracyDisplay.textContent = `${accuracy}% acc`;
                     }
@@ -790,7 +890,7 @@
             document.addEventListener('keyup', (e) => {
                 const key = e.key.toLowerCase();
                 const keyElement = document.querySelector(`[data-key="${key}"]`);
-                
+
                 if (keyElement) {
                     keyElement.classList.remove('active');
                 }
@@ -801,7 +901,7 @@
 
             const toggleBtns = document.querySelectorAll('.toggle-btn');
             const keys = document.querySelectorAll('.key');
-            
+
             // Set initial key shape
             keys.forEach(key => key.classList.add('round'));
 
@@ -811,7 +911,7 @@
                     toggleBtns.forEach(b => b.classList.remove('active'));
                     // Add active class to clicked button
                     btn.classList.add('active');
-                    
+
                     // Remove all shape classes from keys
                     keys.forEach(key => {
                         key.classList.remove('round', 'square', 'bordered');
@@ -822,4 +922,5 @@
         });
     </script>
 </body>
-</html> 
+
+</html>

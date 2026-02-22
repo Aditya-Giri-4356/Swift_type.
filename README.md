@@ -1,225 +1,117 @@
 # swift_type.
 
-An AI-powered 15-second typing test website that adapts to your skill level and provides personalized training.
+A 15-second typing test website that adapts to your skill level.
 
 ![swift_type logo](swifttypefavicon.png)
 
-> **🚀 [Try it now!](https://aditya-giri-4356.github.io/Swift_type./versions/) - Choose between AI-powered v2.0.0 or Classic v1.0.0**
+> **[Try it here](https://aditya-giri-4356.github.io/Swift_type./versions/)** - Pick between v2.0.1 or Classic v1.0.0
 
 ## Version
-v2.0.0
+v2.0.1
 
-## 🚀 New AI-Powered Features
+## What it does
 
-### **Intelligent Text Generation**
-- **Internet-Based Content**: Fetches random text from multiple APIs (quotes, jokes, facts)
-- **Smart Fallback System**: Generates intelligent fallback text when APIs are unavailable
-- **Dynamic Content**: Never runs out of fresh, engaging text to type
+You get 15 seconds. Type as fast and as accurately as you can. The site tracks your speed (WPM) and accuracy in real time, then shows your results when the timer runs out. Press Tab to go again.
 
-### **AI Difficulty Analysis**
-- **Adaptive Learning**: Analyzes your performance and adjusts difficulty automatically
-- **Word Complexity Scoring**: Evaluates words based on length, character complexity, and patterns
-- **Progressive Difficulty**: Starts easy and scales up as you improve
+The word generation system picks words based on how well you've been doing. It starts simple and ramps up as you get faster. If you keep messing up certain keys, it'll throw more of those at you so you actually improve.
 
-### **Personalized Training**
-- **Weak Key Detection**: Identifies keys you struggle with and includes them more frequently
-- **Error Pattern Analysis**: Tracks your typing mistakes to provide targeted practice
-- **Performance History**: Maintains detailed history of your last 10 tests
+## Features
 
-### **Smart Content Curation**
-- **Difficulty-Based Word Selection**: 
-  - Easy: Common words (the, and, for, etc.)
-  - Medium: Intermediate vocabulary (about, through, etc.)
-  - Hard: Complex words (sophisticated, revolutionary, etc.)
-- **Personalized Sentences**: 30% chance to include words with your weak keys
-- **Optimal Length**: Adjusts sentence length based on your skill level
+- **15-second test** with a live countdown timer
+- **Real-time WPM and accuracy** displayed as you type
+- **Adaptive difficulty** - the words get harder as you get better
+- **Weak key targeting** - if you keep mistyping a letter, you'll see it more often
+- **Smooth cursor animation** - the cursor slides between characters instead of jumping
+- **Three keyboard styles** - round (default), square, or bordered. Toggle in the top-right corner
+- **Three-line text display** with smooth scrolling as you type through lines
+- **Backspace support** for correcting mistakes
+- **Clean results screen** showing final WPM and accuracy when the timer ends
 
-## Core Features
+## How difficulty works
 
-- **15-Second Typing Test**: Quick and efficient way to measure typing speed
-- **Real-time Statistics**: 
-  - Words Per Minute (WPM)
-  - Accuracy Percentage
-- **Dynamic Keyboard Visualization**:
-  - Real-time key highlighting
-  - Three keyboard styles:
-    - Round (default)
-    - Square
-    - Bordered
-- **Smooth Text Display**:
-  - Three-line text display
-  - Automatic text progression
-  - Smooth fade transitions
-  - Cursor tracking
-- **Advanced Error Handling**:
-  - Real-time error highlighting
-  - Backspace support
-  - Detailed accuracy calculation
-  - Error pattern tracking
+The system tracks your last few tests and adjusts what words it gives you:
 
-## Technologies Used
+- **Level 1-2**: Short, common words (the, and, for, run, big, etc.)
+- **Level 3-4**: Medium words (about, dance, music, queen, etc.)
+- **Level 5**: Longer words (computer, business, analysis, etc.)
 
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- AI-Powered Text Generation
-- Multiple REST APIs for content
-- Google Fonts:
-  - League Spartan
-  - Roboto
+If your WPM is above 60 with 95%+ accuracy, difficulty goes up. If you're below 30 WPM or under 80% accuracy, it scales back down. It also tracks which specific keys you make errors on and includes words with those letters more frequently.
 
-## How the AI Works
+## Word generation
 
-### **Performance Tracking**
-1. **Initial Assessment**: Starts with easy words to gauge your skill level
-2. **Continuous Monitoring**: Tracks every keystroke, error, and timing
-3. **Pattern Recognition**: Identifies which keys and word patterns you struggle with
-4. **Adaptive Response**: Adjusts difficulty and content based on your performance
+All words are generated locally from a built-in corpus of 200+ English words across three difficulty tiers. No external APIs, no network calls, no loading delays. Words are shuffled each time so you don't get the same sequence twice.
 
-### **Difficulty Scaling**
-- **Level 1-2**: Easy words, short sentences (beginners)
-- **Level 3-4**: Medium complexity, balanced content (intermediate)
-- **Level 5**: Hard words, complex sentences (advanced)
+## Tech
 
-### **Smart Content Generation**
-- **API Integration**: Fetches fresh content from multiple sources
-- **Fallback Intelligence**: Generates contextually appropriate text when APIs fail
-- **Personalization**: Includes words with your weak keys for targeted practice
+- HTML, CSS, vanilla JavaScript
+- No frameworks, no dependencies, no build step
+- Google Fonts (League Spartan, Roboto)
 
-## Usage
+## How to use
 
-1. Open the website in a browser
-2. Press any key to start typing
-3. The AI will analyze your performance in real-time
-4. Type the displayed text as accurately as possible
-5. The system learns from your mistakes and adjusts accordingly
-6. View your WPM and accuracy results after 15 seconds
-7. Press TAB to restart with new AI-generated content
-8. Watch as the difficulty adapts to your skill level over multiple tests
+1. Open the site
+2. Start typing — the timer begins on your first keypress
+3. Type the grey text as fast and accurately as you can
+4. White = correct, red = wrong
+5. Results show up when the timer hits zero
+6. Press Tab to restart with fresh words
 
-## Keyboard Customization
+## Links
 
-Toggle between three keyboard styles using the buttons in the top-right corner:
-- Round: Circular keys (default)
-- Square: Square keys with rounded corners
-- Bordered: Outlined keys with transparent background
+**Version selector**: https://aditya-giri-4356.github.io/Swift_type./versions/
 
-## Design Features
+**Latest (v2.0.1)**: https://aditya-giri-4356.github.io/Swift_type./
 
-- Minimalist black and white design
-- Smooth animations and transitions
-- Responsive layout
-- Custom cursor animation
-- Dynamic text fading
-- Clean result display
-- AI-powered adaptive interface
+**Classic (v1.0.0)**: https://aditya-giri-4356.github.io/Swift_type./versions/v1.0.0/
 
-## API Sources
+## File structure
 
-The AI system fetches content from these free APIs:
-- **Quotable.io**: Inspirational quotes
-- **ZenQuotes.io**: Motivational quotes
-- **Kanye.rest**: Random Kanye West quotes
-- **Chuck Norris API**: Chuck Norris jokes
+```
+swift_type/
+  index.html          (v2.0.1)
+  swifttypefavicon.png
+  swifttype..png
+  README.md
+  versions/
+    index.html         (version selector)
+    v1.0.0/
+      index.html
+      README.md
+      swifttypefavicon.png
+```
 
-*Note: If APIs are unavailable, the system automatically generates intelligent fallback content.*
+## Browser support
 
-## Performance Benefits
+Works on Chrome, Firefox, Safari, Edge — anything modern with JS enabled. Chrome recommended.
 
-### **For Beginners**
-- Starts with simple, common words
-- Gradually introduces complexity
-- Focuses on building confidence
+## Setup
 
-### **For Intermediate Users**
-- Balanced mix of easy and challenging content
-- Identifies specific weak areas
-- Provides targeted practice
-
-### **For Advanced Typists**
-- Complex vocabulary and sentence structures
-- Challenging word combinations
-- Continuous skill refinement
-
-## 🎯 **Start Here - Version Selector**
-
-**Choose your preferred typing experience:**
-- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/
-
-The version selector lets you easily choose between:
-- **v2.0.0 (AI-Powered)**: Intelligent text generation, adaptive difficulty, personalized training
-- **v1.0.0 (Classic)**: Original minimalist design with static content
-
-## Direct Access Links
-
-### **AI-Powered Version (Recommended)**
-- **v2.0.0**: Latest version with intelligent features
-- **URL**: https://aditya-giri-4356.github.io/Swift_type./
-
-### **Classic Version**
-- **v1.0.0**: Original version with static content
-- **URL**: https://aditya-giri-4356.github.io/Swift_type./versions/v1.0.0/
-
-## Installation
-
-1. Clone the repository
-2. Place files in your web server directory
-3. Ensure all files are in the following structure:
-   ```
-   your-website/
-   ├── index.html (v2.0.0 - AI-powered)
-   ├── swifttypefavicon.png
-   ├── README.md
-   └── versions/
-       ├── index.html (version selector)
-       ├── v1.0.0/
-       │   ├── index.html
-       │   ├── README.md
-       │   └── swifttypefavicon.png
-       └── v2.0.0/
-           ├── index.html
-           ├── README.md
-           └── swifttypefavicon.png
-   ```
-
-## Browser Support
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-- Any modern browser with JavaScript enabled
-
-## Credits
-
-- **Fonts**: Google Fonts (League Spartan, Roboto)
-- **APIs**: Quotable.io, ZenQuotes.io, Kanye.rest, Chuck Norris API
-- **Design**: Minimalist, user-focused interface
-- **AI Logic**: Custom-built adaptive learning system
-
-## Quick Start
-
-**🎯 [Visit the Version Selector](https://aditya-giri-4356.github.io/Swift_type./versions/) to choose your preferred experience!**
+Clone the repo and serve it from any web server (or just open `index.html` directly).
 
 ## License
 
-MIT License - Feel free to use and modify for your projects.
+MIT
 
 ## Changelog
 
-### v2.0.0 (Latest)
-- ✨ Added AI-powered text generation from internet sources
-- 🧠 Implemented adaptive difficulty system
-- 📊 Added performance tracking and analysis
-- 🎯 Introduced personalized training with weak key detection
-- 🔄 Enhanced with smart fallback content generation
-- 📈 Added progressive difficulty scaling
-- 🎨 Updated UI to reflect AI capabilities
+### v2.0.1
+- Smooth cursor animation — cursor now slides between characters instead of teleporting
+- Replaced external API word fetching with a self-contained corpus of 200+ words
+- Loading bar shown before text generation completes
+- Cursor properly hides on the results screen
+- Removed stray character from HTML
+- Cleaned up empty CSS rulesets
+
+### v2.0.0
+- Added adaptive difficulty system
+- Added performance tracking and weak key detection
+- Text generation from multiple internet APIs with smart fallback
+- Progressive difficulty scaling
+- Updated UI
 
 ### v1.0.0
-- 🎉 Initial release
-- ⚡ 15-second typing test
-- ⌨️ Dynamic keyboard visualization
-- 📱 Responsive design
-- 🎨 Three keyboard styles
-- 📊 Real-time statistics 
+- Initial release
+- 15-second typing test
+- Dynamic keyboard visualization
+- Three keyboard styles
+- Real-time WPM and accuracy
